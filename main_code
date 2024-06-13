@@ -1,0 +1,100 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+#deklarasi data tiap sampel
+n = np.array([
+    [990, 990, 991, 990, 990, 992],
+    [1014, 994, 991, 990, 991, 982],
+    [992, 993, 990, 992, 997, 990],
+    [991, 990, 1020, 996, 991, 991],
+    [992, 995, 996, 994, 992, 991],
+    [991, 990, 992, 986, 993, 989],
+    [992, 996, 987, 996, 992, 993],
+    [994, 990, 991, 993, 987, 992],
+    [989, 988, 993, 994, 989, 989],
+    [991, 990, 992, 993, 990, 990],
+    [994, 994, 987, 988, 994, 992],
+    [992, 994, 992, 993, 988, 992],
+    [989, 993, 990, 991, 988, 993],
+    [995, 994, 991, 991, 992, 994],
+    [991, 992, 991, 986, 992, 988],
+    [999, 990, 991, 994, 994, 991],
+    [989, 990, 991, 993, 991, 1006],
+    [990, 993, 993, 991, 990, 991],
+    [992, 990, 992, 988, 994, 995],
+    [987, 991, 988, 991, 992, 992]
+])
+#parameter R chart
+D_4 = 2.004 
+D_3 = 0
+A_2 = 0.483
+#parameter X chart
+
+#banyaknya pengambilan sampel
+d = n.shape[0]
+sample_number = np.arange(1, d+1, 1) #koordinat sumbu X
+R = np.array([0.0]*d) #deklarasi array R
+X_bar = np.array([0.0]*d) #deklarasi array X bar
+ni = np.array([0.0]*d) #deklarasi array data pengambilan sampel ke - i
+for i in range (0, d) : #for loop untuk setiap n
+    ni = n[i] #simpan n ke - i ke dalam array ni
+    R[i] = ni.ptp() #simpan nilai range ke variabel R 
+    X_bar[i] = ni.mean() #simpan nilai rata-rata ke variabel X_bar
+    
+R_bar = R.mean() #rata-rata dari R
+X_bar_bar = X_bar.mean() #rata-rata dari X_bar
+
+#R chart
+UCL_R = np.array([R_bar * D_4]*d) 
+LCL_R = np.array([R_bar * D_3]*d)
+mean_R = np.array([R_bar]*d)
+
+#X chart
+UCL_X = np.array([X_bar_bar + A_2*R_bar]*d)
+LCL_X = np.array([X_bar_bar - A_2*R_bar]*d)
+mean_X = np.array([X_bar_bar]*d)
+    
+print("Rata-rata : ", X_bar)
+print("Range : ", R)
+
+#plot R chart
+plt.plot(sample_number, R) #grafik R
+plt.plot(sample_number, UCL_R, label = "UCL") #batas UCL
+plt.plot(sample_number, LCL_R, label = "LCL") #batas LCL
+plt.plot(sample_number, mean_R) #batas mean R
+plt.suptitle("R chart", fontsize=14, fontweight='bold')
+plt.title("1k ohm resistor")
+plt.xlabel("sample")
+plt.ylabel("Range")
+plt.legend(loc='upper right')
+plt.show()
+
+plt.plot(sample_number, X_bar)
+plt.plot(sample_number, UCL_X, label = "UCL")
+plt.plot(sample_number, LCL_X, label = "LCL")
+plt.plot(sample_number, mean_X)
+plt.suptitle("X bar chart", fontsize=14, fontweight='bold')
+plt.title("1k ohm resistor")
+plt.xlabel("sample")
+plt.ylabel("X_bar")
+plt.legend(loc='upper right')
+plt.show()
+
+#data pointer untuk mencari nilai spesifik pada sampel ke i
+print("DATA POINTER")
+loop = True
+while(loop) :
+    data_pointer = input("r untuk R chart \nx untuk X_bar chart \ns untuk selesai (r/x/s): ")
+    if data_pointer.lower() == "r":
+        print("R chart")
+        chart_pointer = int(input("Sample ke- : "))
+        print("Range sample ke- ", chart_pointer, "adalah", R[chart_pointer - 1])
+    elif  data_pointer.lower() == "x":
+        print("X_bar chart")
+        chart_pointer = int(input("Sample ke- : "))
+        print("Rata sample ke- ", chart_pointer, "adalah", X_bar[chart_pointer - 1])
+    elif  data_pointer.lower() == "s":
+        print("stop")
+        loop = False
+    else :
+        print("Input Error")
